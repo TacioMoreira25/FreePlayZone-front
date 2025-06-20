@@ -1,0 +1,20 @@
+export const GAME_GENRES = [
+  { name: "Ação", slug: "action" },
+  { name: "Aventura", slug: "adventure" },
+  { name: "Indie", slug: "indie" },
+  { name: "RPG", slug: "role-playing-games-rpg" },
+  { name: "Estratégia", slug: "strategy" },
+  { name: "Tiro", slug: "shooter" },
+  { name: "Casual", slug: "casual" },
+  { name: "Simulação", slug: "simulation" },
+  { name: "Quebra-cabeça", slug: "puzzle" },
+  { name: "Arcade", slug: "arcade" },
+  { name: "Plataforma", slug: "platformer" },
+  { name: "Corrida", slug: "racing" },
+  { name: "Esportes", slug: "sports" },
+  { name: "Luta", slug: "fighting" },
+  { name: "Família", slug: "family" },
+  { name: "Tabuleiro", slug: "board-games" },
+  { name: "Educacional", slug: "educational" },
+  { name: "Cartas", slug: "card" }
+];

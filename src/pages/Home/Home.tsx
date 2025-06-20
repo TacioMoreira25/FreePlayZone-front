@@ -5,7 +5,8 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 to-indigo-700">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800
+     to-indigo-700">
 
       <div className="absolute top-0.5 left-7 z-10">
         <img
