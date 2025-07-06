@@ -3,30 +3,24 @@ import type { GamesResponseDTO } from "../types";
 
 interface GameListPageProps {
   games: GamesResponseDTO[];
-  onBack: () => void;
+  showSaveButton?: boolean;
+  onSaveGame?: (game: GamesResponseDTO) => void;
+  showRemoveButton?: boolean;
+  onRemoveGame?: (game: GamesResponseDTO) => void;
 }
 
-const GameListPage: React.FC<GameListPageProps> = ({ games, onBack }) => {
+const GameListPage: React.FC<GameListPageProps> = ({
+  games,
+  showSaveButton,
+  onSaveGame,
+  showRemoveButton,
+  onRemoveGame,
+}) => {
   return (
     <div className="min-h-screen flex flex-col px-4 py-8 bg-gradient-to-r from-gray-800 to-indigo-700">
-
-      <div className="flex items-center justify-between mb-8 max-w-6xl mx-auto w-full">
-
-        <h1 className="text-4xl font-extrabold tracking-tight text-white drop-shadow">
-          Jogos recomendados
-        </h1>
-
-        <button
-          onClick={onBack}
-          className="bg-indigo-400 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-500 \
-          transition text-lg shadow"
-        >
-          Voltar
-        </button>
-      </div>
       {games.length === 0 ? (
         <p className="text-center text-gray-200 text-xl mt-20">
-          Nenhum jogo recomendado encontrado.
+          Nenhum jogo encontrado.
         </p>
       ) : (
         <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-6xl mx-auto w-full">
@@ -38,8 +32,7 @@ const GameListPage: React.FC<GameListPageProps> = ({ games, onBack }) => {
             return (
               <li
                 key={game.name + index}
-                className="border border-gray-300 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl 
-                transition bg-white/95 flex flex-col h-full"
+                className="border border-gray-300 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition bg-white/95 flex flex-col h-full"
               >
                 <img
                   src={game.imageUrl}
@@ -63,8 +56,7 @@ const GameListPage: React.FC<GameListPageProps> = ({ games, onBack }) => {
                     {releaseDate}
                   </p>
                   {game.isFree && (
-                    <span className="inline-block bg-green-100 text-green-800 px-2 py-1 
-                    rounded-full text-xs font-semibold w-fit mb-2">
+                    <span className="inline-block bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold w-fit mb-2">
                       Grátis
                     </span>
                   )}
@@ -78,6 +70,22 @@ const GameListPage: React.FC<GameListPageProps> = ({ games, onBack }) => {
                   >
                     Ver mais detalhes
                   </a>
+                  {showSaveButton && onSaveGame && (
+                    <button
+                      className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition text-sm shadow"
+                      onClick={() => onSaveGame(game)}
+                    >
+                      Salvar na biblioteca
+                    </button>
+                  )}
+                  {showRemoveButton && onRemoveGame && (
+                    <button
+                      className="mt-3 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition text-sm shadow"
+                      onClick={() => onRemoveGame(game)}
+                    >
+                      Remover da biblioteca
+                    </button>
+                  )}
                 </div>
               </li>
             );

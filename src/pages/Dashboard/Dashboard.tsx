@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gameRecommendationService } from "../../features/games/services/gameRecommendationService";
+import { gameLibraryService } from "../../features/games/services/gameLibraryService";
 import type {
   PreferenceRequestDTO,
   GamesResponseDTO,
 } from "../../features/games/types";
 import { GAME_GENRES } from "../../constants/genres";
 import GameListPage from "../../features/games/pages/GameListPage";
+import LibraryPage from "../../features/games/pages/LibraryPage";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -17,6 +19,8 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showGameList, setShowGameList] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
+  const [fromGameList, setFromGameList] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -25,7 +29,10 @@ const Dashboard: React.FC = () => {
       navigate("/login");
     } else {
       try {
-        setUser(JSON.parse(userData));
+        const parsed = JSON.parse(userData);
+        const name =
+          parsed.name || (parsed.user && parsed.user.name) || "usuário";
+        setUser({ name });
       } catch {
         setUser(null);
         navigate("/login");
@@ -63,6 +70,15 @@ const Dashboard: React.FC = () => {
     }
   }
 
+  async function handleSaveGame(game: GamesResponseDTO) {
+    try {
+      await gameLibraryService.addGameToLibrary(game);
+      alert("Jogo salvo na biblioteca!");
+    } catch (err: any) {
+      alert(err.message || "Erro ao salvar jogo na biblioteca");
+    }
+  }
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -78,13 +94,57 @@ const Dashboard: React.FC = () => {
   }
 
   if (showGameList) {
-    return <GameListPage games={games} onBack={() => setShowGameList(false)} />;
+    if (showLibrary) {
+      return <LibraryPage onBack={() => setShowLibrary(false)} />;
+    }
+    return (
+      <div className="min-h-screen flex flex-col px-4 py-8 bg-gradient-to-r from-gray-800 to-indigo-700">
+        <div className="flex items-center justify-between mb-8 max-w-6xl mx-auto w-full">
+          <h1 className="text-4xl font-extrabold tracking-tight text-white drop-shadow">
+            Jogos recomendados
+          </h1>
+          <div className="flex gap-4">
+            <button
+              onClick={() => setShowLibrary(true)}
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition text-lg shadow"
+            >
+              Ver Biblioteca
+            </button>
+            <button
+              onClick={() => setShowGameList(false)}
+              className="bg-indigo-400 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-500 transition text-lg shadow"
+            >
+              Voltar
+            </button>
+          </div>
+        </div>
+        <GameListPage
+          games={games}
+          showSaveButton
+          onSaveGame={handleSaveGame}
+        />
+      </div>
+    );
+  }
+  if (showLibrary) {
+    return (
+      <LibraryPage
+        onBack={() => {
+          setShowLibrary(false);
+          if (fromGameList) {
+            setShowGameList(true);
+            setFromGameList(false);
+          }
+        }}
+      />
+    );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-r
-     from-gray-800 to-indigo-700">
-
+    <div
+      className="flex flex-col items-center justify-center min-h-screen px-4 py-8 bg-gradient-to-r
+     from-gray-800 to-indigo-700"
+    >
       <div className="absolute top-0.5 left-7 z-10">
         <img
           src="/image.png"
@@ -92,16 +152,13 @@ const Dashboard: React.FC = () => {
           className="scale-200 w-22 h-20 object-contain drop-shadow-xl"
         />
       </div>
-      
+
       <div className="w-full max-w-5xl bg-white/10 rounded-2xl shadow-xl p-8 flex flex-col gap-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
           <div className="flex items-center gap-4">
             <h2 className="text-2xl sm:text-3xl font-bold text-white drop-shadow">
               Olá,{" "}
-              <span className="text-indigo-300">
-                {user?.name || "usuário"}
-              </span>
+              <span className="text-indigo-300">{user?.name || "usuário"}</span>
               !
             </h2>
           </div>
@@ -126,10 +183,10 @@ const Dashboard: React.FC = () => {
                 type="button"
                 className={`px-5 py-2 rounded-full font-medium border-2 transition text-base shadow-sm 
                   focus:outline-none focus:ring-2 focus:ring-indigo-400 ${
-                  selected
-                    ? "bg-indigo-600 text-white border-indigo-400 shadow-lg scale-105"
-                    : "bg-white/80 text-gray-800 border-gray-300 hover:bg-indigo-100"
-                }`}
+                    selected
+                      ? "bg-indigo-600 text-white border-indigo-400 shadow-lg scale-105"
+                      : "bg-white/80 text-gray-800 border-gray-300 hover:bg-indigo-100"
+                  }`}
               >
                 {name}
               </button>
@@ -141,8 +198,7 @@ const Dashboard: React.FC = () => {
             htmlFor="description"
             className="block text-white font-medium mb-2"
           >
-            Descrição{" "}
-            <span className="text-gray-300">(opcional)</span>
+            Descrição <span className="text-gray-300">(opcional)</span>
           </label>
           <textarea
             id="description"
@@ -158,10 +214,18 @@ const Dashboard: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-2">
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold 
-            transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="bg-blue-500 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
             {loading ? "Carregando..." : "Buscar recomendações"}
+          </button>
+          <button
+            onClick={() => {
+              setShowLibrary(true);
+              setFromGameList(false);
+            }}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          >
+            Minha Biblioteca
           </button>
         </div>
 
