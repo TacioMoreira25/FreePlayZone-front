@@ -73,6 +73,14 @@ const LoginPage: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <button
+          type="button"
+          className="w text-base text-blue-900 underline hover:text-blue-700 transition mt-4"
+          disabled={loading}
+          onClick={() => navigate("/forgot-password")}
+          >
+          Esqueceu a senha?
+        </button>
         </div>
 
         <button

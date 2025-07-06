@@ -15,6 +15,11 @@ export interface UpdateUserRequestDTO {
   newPassword: string;
 }
 
+export interface UpdatePasswordRequestDTO {
+  email: string;
+  newPassword: string;
+}
+
 export interface AuthResponse {
   token: string;
   user: {
