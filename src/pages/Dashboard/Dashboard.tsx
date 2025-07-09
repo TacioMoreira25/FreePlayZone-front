@@ -106,13 +106,15 @@ const Dashboard: React.FC = () => {
           <div className="flex gap-4">
             <button
               onClick={() => setShowLibrary(true)}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition text-lg shadow"
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-700 
+              transition text-lg shadow"
             >
               Ver Biblioteca
             </button>
             <button
               onClick={() => setShowGameList(false)}
-              className="bg-indigo-400 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-500 transition text-lg shadow"
+              className="bg-indigo-400 text-white px-6 py-2 rounded-lg font-semibold hover:bg-indigo-500 
+              transition text-lg shadow"
             >
               Voltar
             </button>
@@ -163,11 +165,14 @@ const Dashboard: React.FC = () => {
             </h2>
           </div>
           <button
-            onClick={handleLogout}
-            className="bg-blue-500 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg 
-            font-semibold transition text-lg shadow"
+            onClick={() => {
+              setShowLibrary(true);
+              setFromGameList(false);
+            }}
+            className="bg-blue-100 hover:bg-blue-200 text-shadow-neutral-800 px-8 py-3 rounded-lg 
+            font-semibold transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
-            Sair
+            Minha Biblioteca
           </button>
         </div>
         <h3 className="text-lg sm:text-xl font-semibold text-white text-center">
@@ -211,21 +216,20 @@ const Dashboard: React.FC = () => {
               focus:ring-indigo-400 resize-vertical shadow"
           />
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-2">
+        <div className="flex flex-col sm:flex-row gap-4 justify-end items-center mt-2">
           <button
             onClick={handleSubmit}
-            className="bg-blue-500 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="bg-blue-100 hover:bg-blue-200 text-shadow-neutral-800 px-8 py-3 rounded-lg font-semibold 
+            transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
             {loading ? "Carregando..." : "Buscar recomendações"}
           </button>
           <button
-            onClick={() => {
-              setShowLibrary(true);
-              setFromGameList(false);
-            }}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            onClick={handleLogout}
+            className="bg-blue-100 hover:bg-blue-200 text-shadow-neutral-800 px-8 py-2.5 rounded-lg font-semibold 
+            transition text-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            Minha Biblioteca
+            Sair
           </button>
         </div>
 
